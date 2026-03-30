@@ -28,7 +28,7 @@ async function uploadToTransloadit(filePath: string): Promise<string> {
   return tl.createAssembly({
     params: {
       steps: {
-        export: { use: ":original", robot: "/file/filter", accepts: [["image", "*"]] }
+        export: { use: ":original", robot: "/file/filter", accepts: [["image", "*"] as any] }
       }
     },
     files: {
