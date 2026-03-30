@@ -1,0 +1,81 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String      @id          // = Clerk userId (sub)
+  email     String      @unique
+  name      String?
+  createdAt DateTime    @default(now())
+  workflows Workflow[]
+  runs      WorkflowRun[]
+}
+
+model Workflow {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  name      String        @default("Untitled Workflow")
+  nodes     Json          // serialised ReactFlow Node[]
+  edges     Json          // serialised ReactFlow Edge[]
+  thumbnail String?
+  isSample  Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  runs      WorkflowRun[]
+}
+
+model WorkflowRun {
+  id          String       @id @default(cuid())
+  runNumber   Int          @default(autoincrement())
+  workflowId  String
+  workflow    Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  status      RunStatus    @default(RUNNING)
+  scope       RunScope
+  startedAt   DateTime     @default(now())
+  completedAt DateTime?
+  durationMs  Int?
+  nodeResults NodeResult[]
+}
+
+model NodeResult {
+  id         String      @id @default(cuid())
+  runId      String
+  run        WorkflowRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  nodeId     String
+  nodeType   String      // text | upload-image | upload-video | llm | crop-image | extract-frame
+  nodeLabel  String?
+  status     NodeStatus  @default(RUNNING)
+  inputs     Json?       // snapshot of resolved inputs
+  output     Json?       // { type: "text"|"image"|"video", value: string }
+  error      String?
+  durationMs Int?
+  startedAt  DateTime    @default(now())
+}
+
+enum RunStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+  PARTIAL
+}
+
+enum RunScope {
+  FULL
+  PARTIAL
+  SINGLE
+}
+
+enum NodeStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+  SKIPPED
+}

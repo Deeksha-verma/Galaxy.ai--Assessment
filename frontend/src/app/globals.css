@@ -1,0 +1,336 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────
+   NextFlow-INSPIRED DESIGN TOKENS
+───────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --bg-canvas: #000000;
+  --bg-panel: #0f0f0f;
+  --bg-sidebar: #111111;
+  --bg-node: #1a1a1a;
+  --bg-node-head: #222222;
+  --bg-input: #0f0f0f;
+  --bg-hover: #252525;
+  --bg-overlay: rgba(255, 255, 255, 0.04);
+
+  /* Borders */
+  --border-dim: rgba(255, 255, 255, 0.06);
+  --border-subtle: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-accent: rgba(255, 255, 255, 0.30);
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --text-muted: #444444;
+  --text-dim: #2a2a2a;
+
+  /* Accents */
+  --accent: #ffffff;
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-glow: rgba(139, 92, 246, 0.35);
+
+  /* Handle colours */
+  --handle-text: #60a5fa;
+  --handle-image: #34d399;
+  --handle-video: #fb923c;
+  --handle-output: #c084fc;
+
+  /* Status */
+  --status-running: #f59e0b;
+  --status-success: #10b981;
+  --status-failed: #f43f5e;
+
+  /* Radius */
+  --r-node: 10px;
+  --r-btn: 8px;
+  --r-input: 6px;
+  --r-pill: 99px;
+}
+
+/* ─── Reset ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ─── Focus rings ─── */
+:focus-visible {
+  outline: 1.5px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+/* ─── Node glow animations ─── */
+@keyframes node-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px var(--accent-purple), 0 0 16px 4px var(--accent-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 0 1px var(--accent-purple), 0 0 28px 10px var(--accent-glow);
+  }
+}
+
+@keyframes node-success-flash {
+  0% {
+    box-shadow: 0 0 0 1px var(--status-success), 0 0 20px 6px rgba(16, 185, 129, 0.5);
+  }
+
+  100% {
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3), 0 0 0 0 transparent;
+  }
+}
+
+.node-running {
+  animation: node-pulse 1.4s ease-in-out infinite;
+  border-color: var(--accent-purple) !important;
+}
+
+.node-success {
+  animation: node-success-flash 0.8s ease-out forwards;
+}
+
+.node-failed {
+  border-color: var(--status-failed) !important;
+  box-shadow: 0 0 12px 2px rgba(244, 63, 94, 0.25) !important;
+}
+
+/* ─── Spinner ─── */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 0.7s linear infinite;
+  display: block;
+}
+
+/* ─── ReactFlow overrides to match NextFlow canvas ─── */
+.react-flow__background {
+  background-color: var(--bg-canvas) !important;
+}
+
+.react-flow__minimap {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--border-dim) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+.react-flow__minimap-mask {
+  fill: rgba(139, 92, 246, 0.08);
+}
+
+.react-flow__minimap-node {
+  fill: rgba(255, 255, 255, 0.12);
+}
+
+.react-flow__controls {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  gap: 0 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+}
+
+.react-flow__controls-button {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border-dim) !important;
+  color: var(--text-secondary) !important;
+  fill: var(--text-secondary) !important;
+  width: 32px !important;
+  height: 32px !important;
+  transition: background 0.15s, fill 0.15s !important;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--bg-hover) !important;
+  fill: var(--text-primary) !important;
+}
+
+.react-flow__edge-path {
+  stroke-width: 1.5;
+}
+
+.react-flow__handle {
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.react-flow__handle:hover {
+  transform: scale(1.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Selection box ─── */
+.react-flow__selection {
+  background: rgba(139, 92, 246, 0.06) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+}
+
+/* ─── Shared form elements ─── */
+.nf-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-input);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 6px 9px;
+  outline: none;
+  transition: border-color 0.15s;
+  resize: vertical;
+}
+
+.nf-input:focus {
+  border-color: var(--border-strong);
+}
+
+.nf-input:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  resize: none;
+}
+
+.nf-input::placeholder {
+  color: var(--text-muted);
+}
+
+.nf-select {
+  appearance: none;
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-input);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 6px 9px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.nf-select:focus {
+  border-color: var(--border-strong);
+}
+
+.nf-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+/* ─────────────────────────────────────────
+   LANDING PAGE ANIMATIONS & UTILITIES
+───────────────────────────────────────── */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Glass panel utility used in landing page */
+@keyframes revealFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(30px);
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.animate-reveal {
+  animation: revealFromBottom 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2.5rem;
+}
